@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\App",
+    "\\src\\ForgetPage",
+    "\\src\\HomePage",
+    "\\src\\LoginPage",
+    "\\src\\RegisterPage",
+    "\\src\\TCPage",
+    "\\src\\_reducers",
+    "\\src\\_services"
+  ],
+  "SelectedNode": "\\src\\TCPage\\TCPage.jsx",
+  "PreviewInSolutionExplorer": false
+}
