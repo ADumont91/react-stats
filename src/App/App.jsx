@@ -10,6 +10,7 @@ import { LoginPage } from '../LoginPage';
 import { RegisterPage } from '../RegisterPage';
 import { ForgetPage } from '../ForgetPage';
 import { TCPage } from '../TCPage';
+import { Container } from 'shards-react'
 
 class App extends React.Component {
     constructor(props) {
@@ -24,8 +25,8 @@ class App extends React.Component {
     render() {
         const { alert } = this.props;
         return (
-            <div className="jumbotron">
-                <div className="container">
+			<div className="jumbotron">
+                <Container>
                     <div className="col-sm-8 col-sm-offset-2">
                         {alert.message &&
                             <div className={`alert ${alert.type}`}>{alert.message}</div>
@@ -41,7 +42,7 @@ class App extends React.Component {
                             </Switch>
                         </Router>
                     </div>
-                </div>
+                </Container>
             </div>
         );
     }

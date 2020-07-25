@@ -78,6 +78,10 @@ class RegisterPage extends React.Component {
                             <div className="help-block">Password is required</div>
                         }
                     </div>
+					<div className="form-group">
+						<label>By registering, you agree to the</label>
+						<Link to="/TCPage" className="btn btn-link">Terms and Conditions</Link>
+					</div>
                     <div className="form-group">
                         <button className="btn btn-primary">Register</button>
                         {registering && 
@@ -85,9 +89,7 @@ class RegisterPage extends React.Component {
                         }
                         <Link to="/login" className="btn btn-link">Cancel</Link>
                     </div>
-					<div className="form-group">
-						<Link to="/TCPage" className="btn btn-link">Terms and Conditions</Link>
-					</div>
+					
                 </form>
             </div>
         );
