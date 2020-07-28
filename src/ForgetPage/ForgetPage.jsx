@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
+import { Container, Form, FormInput, FormGroup } from "shards-react";
 import { userActions } from '../_actions';
 
 class ForgetPage extends React.Component {
@@ -39,7 +39,7 @@ class ForgetPage extends React.Component {
         const { resettingPass } = this.props;
         const { username, password, submitted } = this.state;
         return (
-            <div className="col-md-6 col-md-offset-3">
+            <Container className="col-md-6 col-md-offset-3">
                 <h2>Reset Password</h2>
                 <form name="form" onSubmit={this.handleSubmit}>
                     <div className={'form-group' + (submitted && !username ? ' has-error' : '')}>
@@ -57,7 +57,7 @@ class ForgetPage extends React.Component {
                         <Link to="/login" className="btn btn-link">Cancel</Link>
                     </div>
                 </form>
-            </div>
+            </Container>
         );
     }
 }

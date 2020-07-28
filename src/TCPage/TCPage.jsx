@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
+import { Container, Form, FormInput, FormGroup } from "shards-react";
 import { userActions } from '../_actions';
 
 class TCPage extends React.Component {
@@ -34,11 +34,11 @@ class TCPage extends React.Component {
         const { acceptingTC } = this.props;
         const { submitted } = this.state;
         return (
-            <div className="col-md-6 col-md-offset-3">
+            <Container className="col-md-6 col-md-offset-3">
                 <h2>Terms and Conditions</h2>
 				<p> We ain't liable for nothin! </p>
                 <Link to="/register" className="btn btn-link">Back to Registration</Link>
-            </div>
+            </Container>
         );
     }
 }
