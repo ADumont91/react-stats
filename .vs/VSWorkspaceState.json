@@ -5,12 +5,12 @@
     "\\src\\App",
     "\\src\\ForgetPage",
     "\\src\\HomePage",
+    "\\src\\LoginPage",
+    "\\src\\RegisterPage",
+    "\\src\\TCPage",
     "\\src\\_actions",
-    "\\src\\_components",
-    "\\src\\_constants",
-    "\\src\\_helpers",
-    "\\src\\_reducers"
+    "\\src\\_services"
   ],
-  "SelectedNode": "\\src\\App\\App.jsx",
+  "SelectedNode": "\\src\\_actions\\user.actions.js",
   "PreviewInSolutionExplorer": false
 }
