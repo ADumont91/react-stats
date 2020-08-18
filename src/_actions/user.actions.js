@@ -1,5 +1,7 @@
 import { userConstants } from '../_constants';
-import { userService } from '../_services';
+//import { userService } from '../_services';
+import myFirebase from '../_services/firebase';
+import * as firebase from 'firebase/app';
 import { alertActions } from './';
 import { history } from '../_helpers';
 
@@ -7,76 +9,119 @@ export const userActions = {
     login,
     logout,
     register,
-    getAll,
-    delete: _delete,
+    //getAll,
+    //delete: _delete,
     forgot
 };
 
-function login(username, password) {
+function login(email, password) {
     return dispatch => {
-        dispatch(request({ username }));
+        dispatch(request({ email }));
 
-        userService.login(username, password)
-            .then(
-                user => { 
-                    dispatch(success(user));
-                    history.push('/');
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
-                }
-            );
+        //userService.login(username, password)
+        firebase
+            .auth()
+            .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(function () {
+                myFirebase.auth().signInWithEmailAndPassword(email, password)
+                .then(
+                    fireBaseUser => { 
+                        var user = myFirebase.auth().currentUser;
+                        dispatch(success(
+                            {
+                                id:         user.uid,
+                                username:   user.email,
+                                firstName:  user.displayName,
+                                lastName:   user.lastName,
+                                token:      user.refreshToken
+                            }
+                        ));
+                        history.push('/');
+                    },
+                    error => {
+                        dispatch(failure(error.toString()));
+                        dispatch(alertActions.error(error.toString()));
+                    }
+                )
+            });
     };
-
     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
 }
 
 function logout() {
-    userService.logout();
-    return { type: userConstants.LOGOUT };
+    return dispatch => {
+        dispatch(request());
+
+        myFirebase
+            .auth()
+            .signOut()
+            .then(() => {
+                dispatch(success());
+            })
+            .catch(error => {
+                dispatch(failure(error.toString()));
+                dispatch(alertActions.error(error.toString()));
+            });
+    };
+    function request() { return { type: userConstants.LOGOUT_REQUEST } }
+    function success() { return { type: userConstants.LOGOUT_SUCCESS } }
+    function failure(error) { return { type: userConstants.LOGOUT_FAILURE, error } }
 }
 
 function register(user) {
     return dispatch => {
-        dispatch(request(user));
+        dispatch(request( { user } ));
 
-        userService.register(user)
-            .then(
-                user => { 
-                    dispatch(success());
-                    history.push('/login');
-                    dispatch(alertActions.success('Registration successful'));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
-                }
-            );
-    };
-
+        myFirebase
+            .auth()
+            .createUserWithEmailAndPassword(user.email, user.password)
+            .then(dataBeforeEmail => {
+                myFirebase.auth().onAuthStateChanged(function(user) {
+                    user.sendEmailVerification();
+                });
+            })
+            .then(dataAfterEmail => {
+                myFirebase.auth().onAuthStateChanged(function(user) {
+                    if (user) {
+                        dispatch(success(user));
+                        history.push('/login');
+                        dispatch(alertActions.success('Registration successful'));
+                    } else {
+                        dispatch(failure());
+                    }
+                })
+            })
+            .catch(function (error) {
+                dispatch(failure(error.toString()));
+                dispatch(alertActions.error(error.toString()));
+            })
+        };
     function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }
     function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } }
     function failure(error) { return { type: userConstants.REGISTER_FAILURE, error } }
 }
 
+/*
 function getAll() {
     return dispatch => {
         dispatch(request());
 
         userService.getAll()
+        myFirebase
+            .auth()
+            .
             .then(
                 users => dispatch(success(users)),
                 error => dispatch(failure(error.toString()))
             );
     };
-
     function request() { return { type: userConstants.GETALL_REQUEST } }
     function success(users) { return { type: userConstants.GETALL_SUCCESS, users } }
     function failure(error) { return { type: userConstants.GETALL_FAILURE, error } }
 }
+
 
 // prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(id) {
@@ -94,12 +139,15 @@ function _delete(id) {
     function success(id) { return { type: userConstants.DELETE_SUCCESS, id } }
     function failure(id, error) { return { type: userConstants.DELETE_FAILURE, id, error } }
 }
+*/
 
-function forgot(username) {
+function forgot(email) {
     return dispatch => {
-        dispatch(request({ username }));
+        dispatch(request({ email }));
 
-        userService.forgot(username)
+        myFirebase
+            .auth()
+            .sendPasswordResetEmail(email)
             .then(
                 user => { 
                     dispatch(success(user));
@@ -112,7 +160,7 @@ function forgot(username) {
             );
     };
 
-    function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }
-    function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.REGISTER_FAILURE, error } }
+    function request(user) { return { type: userConstants.RESETPASS_REQUEST, user } }
+    function success(user) { return { type: userConstants.RESETPASS_SUCCESS, user } }
+    function failure(error) { return { type: userConstants.RESETPASS_FAILURE, error } }
 };
