@@ -10,7 +10,7 @@ import { LoginPage } from '../LoginPage';
 import { RegisterPage } from '../RegisterPage';
 import { ForgetPage } from '../ForgetPage';
 import { TCPage } from '../TCPage';
-import { Container, Navbar, NavbarBrand,NavItem, NavLink, Nav, Collapse } from 'shards-react'
+import { Container, Navbar, NavbarBrand,NavItem, NavLink, Nav, Collapse } from 'shards-react';
 
 class App extends React.Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class App extends React.Component {
         return (
 			<div>
 				<Navbar type="dark" theme="primary"  expand="md">
-					<img src="https://gracelife.co/wp-content/uploads/2019/08/cropped-GL-logo_VECTOR_Blue-PNG.png" alt="Logo" style={{width:"60px"}}></img>
+					<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSSo559g1C3CL5sri0rDfJt7TxFWplEFQlzjw&usqp=CAU" alt="Logo" style={{width:"60px"}}></img>
 					<NavbarBrand href="/login">Login App</NavbarBrand>
 					<Nav navbar>
 						<NavItem><NavLink href="/login">Login</NavLink></NavItem>

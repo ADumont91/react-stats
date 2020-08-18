@@ -10,10 +10,10 @@ class LoginPage extends React.Component {
         super(props);
 
         // reset login status
-        this.props.logout();
+        //this.props.logout();
 
         this.state = {
-            username: '',
+            email: '',
             password: '',
             submitted: false
         };
@@ -31,24 +31,24 @@ class LoginPage extends React.Component {
         e.preventDefault();
 
         this.setState({ submitted: true });
-        const { username, password } = this.state;
-        if (username && password) {
-            this.props.login(username, password);
+        const { email, password } = this.state;
+        if (email && password) {
+            this.props.login(email, password);
         }
     }
 
     render() {
         const { loggingIn } = this.props;
-        const { username, password, submitted } = this.state;
+        const { email, password, submitted } = this.state;
         return (
             <Container className="col-md-6 col-md-offset-3">
                 <h2>Login</h2>
                 <Form name="form" onSubmit={this.handleSubmit}>
-                    <FormGroup className={'formGroup' + (submitted && !username ? ' has-error' : '')}>
-                        <label htmlFor="username">Username</label>
-                        <FormInput type="text" className="form-control" name="username" placeholder="Username" value={username} onChange={this.handleChange} />
-                        {submitted && !username &&
-                            <div className="help-block">Username is required</div>
+                    <FormGroup className={'formGroup' + (submitted && !email ? ' has-error' : '')}>
+                        <label htmlFor="email">Email</label>
+                        <FormInput type="text" className="form-control" name="email" placeholder="account@example.com" value={email} onChange={this.handleChange} />
+                        {submitted && !email &&
+                            <div className="help-block">Email is required</div>
                         }
                     </FormGroup>
                     <FormGroup className={'form-group' + (submitted && !password ? ' has-error' : '')}>

@@ -9,10 +9,11 @@ class TCPage extends React.Component {
         super(props);
 
         // reset login status
-        this.props.logout();
+        //this.props.logout();
 
         this.state = {
-            submitted: false
+            submitted: false,
+            acceptingTC: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -26,7 +27,6 @@ class TCPage extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-
         this.setState({ submitted: true });
     }
 
@@ -34,11 +34,15 @@ class TCPage extends React.Component {
         const { acceptingTC } = this.props;
         const { submitted } = this.state;
         return (
-            <Container className="col-md-6 col-md-offset-3">
-                <h2>Terms and Conditions</h2>
-				<p> We ain't liable for nothin! </p>
-                <Link to="/register" className="btn btn-link">Back to Registration</Link>
-            </Container>
+            <Form name="form" onSubmit={this.handleSubmit}>
+                <FormGroup className="form-group">
+                    <Container className="col-md-6 col-md-offset-3">
+                        <h2>Terms and Conditions</h2>
+                        <p> We ain't liable for nothin! </p>
+                        <Link to="/register" className="btn btn-link">Back to Registration</Link>
+                    </Container>
+                </FormGroup>
+            </Form>
         );
     }
 }
