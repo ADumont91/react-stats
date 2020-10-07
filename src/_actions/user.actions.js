@@ -1,13 +1,13 @@
 import { userConstants } from '../_constants';
 //import { userService } from '../_services';
 import myFirebase from '../_services/firebase';
-import * as firebase from 'firebase/app';
 import { alertActions } from './';
 import { history } from '../_helpers';
 
 export const userActions = {
     login,
     logout,
+    verifyAuth,
     register,
     //getAll,
     //delete: _delete,
@@ -21,32 +21,31 @@ function login(email, password) {
         dispatch(request({ email }));
 
         //userService.login(username, password)
-        firebase
+        myFirebase
             .auth()
-            .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-            .then(function () {
-                myFirebase.auth().signInWithEmailAndPassword(email, password)
-                .then(
-                    fireBaseUser => { 
-                        var user = myFirebase.auth().currentUser;
-                        dispatch(success(
-                            {
-                                id:         user.uid,
-                                username:   user.email,
-                                firstName:  user.displayName,
-                                lastName:   user.lastName,
-                                token:      user.refreshToken
-                            }
-                        ));
-                        db.collection("users").doc(email).update({Online: true});
-                        history.push('/');
-                    },
-                    error => {
-                        dispatch(failure(error.toString()));
-                        dispatch(alertActions.error(error.toString()));
-                    }
-                )
-            });
+            .signInWithEmailAndPassword(email, password)
+            .then(
+                fireBaseUser => { 
+                    var user = myFirebase.auth().currentUser;
+                    dispatch(success(
+                        {
+                            email:      user.email,
+                            id:         user.uid,
+                            username:   user.email,
+                            firstName:  user.displayName,
+                            lastName:   user.lastName,
+                            token:      user.refreshToken
+                        } 
+                    ));
+                    db.collection("users").doc(email).update({Online: true});
+                    history.push('/');
+                    //console.log(fireBaseUser);
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            )
     };
     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
@@ -72,6 +71,25 @@ function logout() {
     function request() { return { type: userConstants.LOGOUT_REQUEST } }
     function success() { return { type: userConstants.LOGOUT_SUCCESS } }
     function failure(error) { return { type: userConstants.LOGOUT_FAILURE, error } }
+}
+
+function verifyAuth() {
+    return dispatch => {
+        dispatch(verifyrequest());
+        myFirebase
+            .auth()
+            .onAuthStateChanged(
+                user => {
+                    if (user !== null) {
+                        dispatch(loginsuccess(user));
+                        history.push('/');
+                    }
+                    dispatch(verifysuccess());
+                });
+    };
+    function verifyrequest() { return { type: userConstants.VERIFY_REQUEST } }
+    function verifysuccess() { return { type: userConstants.VERIFY_SUCCESS } }
+    function loginsuccess(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
 }
 
 function register(user) {
