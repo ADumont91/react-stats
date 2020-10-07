@@ -14,6 +14,8 @@ export const userActions = {
     forgot
 };
 
+const db = myFirebase.firestore();
+
 function login(email, password) {
     return dispatch => {
         dispatch(request({ email }));
@@ -36,6 +38,7 @@ function login(email, password) {
                                 token:      user.refreshToken
                             }
                         ));
+                        db.collection("users").doc(email).update({Online: true});
                         history.push('/');
                     },
                     error => {
@@ -53,12 +56,13 @@ function login(email, password) {
 function logout() {
     return dispatch => {
         dispatch(request());
-
+        const user = myFirebase.auth().currentUser;
         myFirebase
             .auth()
             .signOut()
             .then(() => {
                 dispatch(success());
+                db.collection("users").doc(user.email).update({Online: false});
             })
             .catch(error => {
                 dispatch(failure(error.toString()));
@@ -71,9 +75,9 @@ function logout() {
 }
 
 function register(user) {
+    const userData = user;
     return dispatch => {
         dispatch(request( { user } ));
-
         myFirebase
             .auth()
             .createUserWithEmailAndPassword(user.email, user.password)
@@ -86,6 +90,12 @@ function register(user) {
                 myFirebase.auth().onAuthStateChanged(function(user) {
                     if (user) {
                         dispatch(success(user));
+                        //console.log(userData);
+                        db.collection("users").doc(user.email).set({
+                            Name: userData.firstName,
+                            Surname: userData.lastName,
+                            Online: false
+                        });
                         history.push('/login');
                         dispatch(alertActions.success('Registration successful'));
                     } else {
@@ -101,6 +111,19 @@ function register(user) {
     function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }
     function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } }
     function failure(error) { return { type: userConstants.REGISTER_FAILURE, error } }
+}
+
+function getUserData(user) {
+    return dispath => {
+        dispatch(request(user));
+        const snapshot = db.collection("users").get();
+        snapshot.forEach(doc => {
+            console.log(doc.id, "=>", doc.firstName);
+        });
+    };
+    function request(user) { return { type: userConstants.GETALL_REQUEST, user } }
+    function success(users) { return { type: userConstants.GETALL_SUCCESS, users } }
+    function failure(error) { return { type: userConstants.GETALL_FAILURE, error } }
 }
 
 /*
