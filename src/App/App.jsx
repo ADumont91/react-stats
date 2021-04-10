@@ -47,6 +47,10 @@ class App extends React.Component {
 		console.log('---------------------------')*/
 	  }
 
+	  newFunctionToShowGreg(stuff) {
+		  stuff = stuff + 1;
+	  }
+
 	  processData() {
 		//const result = readString(this.state.fileData);
 		//console.log(result);
